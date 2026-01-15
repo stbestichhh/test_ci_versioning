@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: '${{ secrets.PAT_DEPLOYS }}'
+          token: ${{ secrets.PAT_DEPLOYS }}
 
       - name: Get branch prefix
         id: br_prefix
@@ -79,6 +79,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No version changes to commit."
           else
+            git remote -v
             git commit -m "ci: update package version to ${NEW_VERSION} [skip ci]" || echo "Commit failed or no changes"
             git push origin master
           fi
