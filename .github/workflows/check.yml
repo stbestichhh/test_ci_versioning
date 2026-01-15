@@ -1,0 +1,29 @@
+name: Branch Validation
+
+on:
+  pull_request:
+    branches: [ 'master' ]
+    types: [ opened, reopened, synchronize ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check branch name format
+        run: |
+          BRANCH="${{ github.event.pull_request.head.ref }}"
+          echo "Branch: $BRANCH"
+          
+          REGEX="^(fix|feature|feat|release|perf|refactor|chore|docs|ci|test|build|revert|hotfix)\/xe-[0-9]+\/[a-zA-Z0-9._-]+$"
+          
+          if [[ "$BRANCH" =~ $REGEX ]]; then
+            echo "Branch name is valid."
+            exit 0
+          else
+            echo "ERROR: Invalid branch name format."
+            echo "Expected: <prefix>/xe-<number>/<branch-name>"
+            echo "Allowed prefixes: fix, feature, feat, release, perf, refactor, chore, docs, ci, test, build, revert, hotfix"
+            exit 1
+          fi
+
